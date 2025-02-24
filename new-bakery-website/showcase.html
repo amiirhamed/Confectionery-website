@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Showcase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .user-info {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .product-card h3 {
+            margin: 10px 0;
+        }
+
+        .product-card p {
+            color: #555;
+        }
+
+        .product-card button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .product-card button:hover {
+            background-color: #0056b3;
+        }
+
+        .go-to-order {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .go-to-order button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .go-to-order button:hover {
+            background-color: #218838;
+        }
+
+        /* اضافه کردن استایل برای دکمه Log Out */
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <!-- دکمه Log Out -->
+    <button class="logout-button" onclick="window.location.href = 'login.html';">Log Out</button>
+
+    <div class="container">
+        <!-- نمایش نام کاربری -->
+        <div class="user-info" id="userInfo">
+            <!-- نام کاربری در اینجا نمایش داده می‌شود -->
+        </div>
+
+        <h1>محصولات</h1>
+        <div class="product-grid" id="productGrid">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+
+        <!-- دکمه برای رفتن به فرم سفارش -->
+        <div class="go-to-order">
+            <button onclick="window.location.href = 'order form.html';" style="font-size: 30px; padding: 15px 30px; width: 250px;">سفارش محصول</button>
+            <button onclick="window.location.href = 'about.html';" style="font-size: 30px; padding: 15px 30px; width: 250px;">دسترسی سریع</button>
+            <button onclick="window.location.href = 'cart.html';" style="font-size: 30px; padding: 15px 30px; width: 250px;">سبد خرید</button>
+        </div>
+        
+    </div>
+
+    <script>
+        // دریافت نام کاربری از localStorage
+        // const username = localStorage.getItem('username');
+        // if (username) {
+        //     document.getElementById('userInfo').textContent = `Welcome, ${username}`;
+        // } else {
+        //     document.getElementById('userInfo').textContent = 'Welcome, Guest';
+        // }
+
+        // بارگذاری محصولات از API
+        fetch('http://localhost:5000/api/products')
+            .then(response => response.json())
+            .then(products => {
+                const productGrid = document.getElementById('productGrid');
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" style="width: 200px; height: 150px; margin-right: 10px;">
+                        <h3>شماره محصول : ${product.id}</h3>
+                        <h3>${product.name} : نام محصول</h3>
+                        <h3>${product.price} : قیمت</h3>
+                    `;
+                    productGrid.appendChild(productCard);
+                });
+            });
+    </script>
+</body>
+</html>

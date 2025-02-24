@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود یا ثبت‌نام</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+    
+        body {
+            background-color: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+    
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+    
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+    
+        input:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+    
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2A7886;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        button:hover {
+            background-color: #364F6B;
+        }
+    
+        #registerBtn {
+            background-color: #574B90;
+        }
+    
+        #registerBtn:hover {
+            background-color: #071A52;
+        }
+    
+        #error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+    
+        .toggle-text {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #007BFF;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    
+        .toggle-text:hover {
+            color: #0056b3;
+        }
+    
+        /* برای نمایش در دستگاه‌های کوچکتر */
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 30px;
+            }
+    
+            h2 {
+                font-size: 20px;
+            }
+    
+            input, button {
+                font-size: 14px;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>ورود به حساب</h2>
+        <form id="authForm">
+            
+            <input type="tel" id="phone" placeholder="شماره تماس" pattern="09[0-9]{9}" required>
+            <input type="password" id="password" placeholder="رمز عبور" required>
+            <button type="submit" style="margin-top: 20px; margin-bottom: 10px; width: 200px;">ورود</button>
+        </form>
+        <button id="registerBtn" style="width: 200px;">ثبت‌نام</button>
+        <div id="error-message" style="color: red; text-align: center; display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById("authForm").addEventListener("submit", async function(event) {  // رویداد submit برای فرم با شناسه authForm ثبت می‌شود.
+            event.preventDefault(); // با استفاده از event.preventDefault() از ارسال پیش‌فرض فرم جلوگیری می‌شود تا بتوان داده‌ها را به صورت دستی ارسال کرد.
+
+
+            const phone = document.getElementById("phone").value;
+            const password = document.getElementById("password").value;
+
+            const userData = { phone, password };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },   // headers مشخص می‌کند که داده‌ها از نوع JSON هستند.
+                    body: JSON.stringify(userData)   // آبجکت userData به رشته JSON تبدیل و در body قرار می‌گیرد.
+                });
+
+                const result = await response.json();   // پاسخ سرور با متد response.json() به آبجکت جاوااسکریپت تبدیل می‌شود.
+
+                if (response.ok) {
+                    localStorage.setItem("token", result.token);
+                    window.location.href = "showcase.html";  // کاربر به صفحه showcase.html هدایت می‌شود
+                } else {
+                    document.getElementById("error-message").innerText = result.message;
+                    document.getElementById("error-message").style.display = "block";
+                }
+            } catch (error) {   // اگر خطایی (مانند قطع ارتباط با سرور) رخ دهد، یک پیام عمومی نمایش داده می‌شود.
+                document.getElementById("error-message").innerText = "خطایی در ارتباط با سرور پیش آمده است";
+                document.getElementById("error-message").style.display = "block";
+            }
+        });
+
+        document.getElementById("registerBtn").addEventListener("click", async function() {
+            const phone = document.getElementById("phone").value;
+            const password = document.getElementById("password").value;
+
+            const userData = { phone, password };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)     // مانند بخش ورود، داده‌های userData در قالب JSON ارسال می‌شوند.
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('ثبت‌نام موفقیت‌آمیز بود');
+                } else {
+                    document.getElementById("error-message").innerText = result.message;
+                    document.getElementById("error-message").style.display = "block";
+                }
+            } catch (error) {
+                document.getElementById("error-message").innerText = "خطایی در ارتباط با سرور پیش آمده است";
+                document.getElementById("error-message").style.display = "block";
+            }
+        });
+    </script>
+
+</body>
+</html>

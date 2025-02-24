@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Form</title>
+    <style>
+        /* سبک عمومی */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* عنوان اصلی */
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* فرم */
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* برچسب‌ها و ورودی‌ها */
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* دکمه */
+        button {
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* دکمه برای هدایت به showcase.html */
+        .link-button {
+            width: 100%;
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+        }
+
+        .link-button:hover {
+            background-color: #218838;
+        }
+
+        /* پیام‌های خطا و موفقیت */
+        .message {
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* واکنش‌گرا */
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="margin-right: 20px;">فرم سفارش</h1>
+
+    <form id="orderForm" >
+        <label for="productId">: شماره ی محصول </label>
+        <input type="number" id="productId" name="productId" required  >
+        <br><br>
+
+        <label for="quantity">: تعداد محصول </label>
+        <input type="number" id="quantity" name="quantity" required>
+        <br><br>
+
+        <button type="submit">ثبت سفارش</button>
+    </form>
+
+    
+    <button onclick="window.location.href='showcase.html'" style="display: flex; justify-content: center; align-items: center; width: 200px; height: 50px; margin-top: 20px; margin-left: 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 24px;">
+        برگشت به منو
+    </button>
+    
+    
+    
+
+    <div id="message" class="message" style="display: none;"></div>
+
+    <script>
+        // وقتی فرم ارسال می‌شود
+        document.getElementById('orderForm').addEventListener('submit', function (event) {   // رویداد submit روی فرم با شناسه orderForm تنظیم می‌شود.
+            event.preventDefault(); // جلوگیری از ارسال مجدد فرم
+    
+            // گرفتن داده‌های فرم و تبدیل آن‌ها به عدد
+            const productId = Number(document.getElementById('productId').value); 
+            const quantity = Number(document.getElementById('quantity').value);
+    
+            // اعتبارسنجی مقادیر ورودی
+            if (!productId || !quantity || quantity <= 0) {
+                showMessage("لطفا مقدار معتبر وارد کنید", "error");
+                return;
+            }
+    
+            // ارسال درخواست POST به سرور
+            fetch('http://localhost:5000/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',   // هدر Content-Type مشخص می‌کند که داده‌ها از نوع JSON هستند.
+                },
+                body: JSON.stringify({    // اطلاعات سفارش (شامل productId و quantity) در قالب JSON به body اضافه می‌شود.
+                    productId: productId, // ارسال به صورت عدد
+                    quantity: quantity    // ارسال به صورت عدد
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to place the order.");
+                }
+                return response.json(); // دریافت پاسخ به صورت JSON
+            })
+            .then(data => {
+                // بررسی وضعیت موفقیت سفارش
+                if (data.message) {   // اگر سرور پیام موفقیت (data.message) بازگرداند
+                    showMessage(data.message, "success");
+                } else {
+                    showMessage("There was an issue with your order. Please try again.", "error");
+                }
+            })
+            .catch(error => {   // اگر در فرآیند ارسال یا دریافت خطایی رخ دهد (مثلاً مشکل در اتصال به سرور)، این خطا در کنسول نمایش داده می‌شود و پیام عمومی خطا به کاربر نشان داده می‌شود.
+                console.error('Error:', error);
+                showMessage("Something went wrong! Please try again later.", "error");
+            });
+        });
+    
+        // تابع برای نمایش پیام
+        function showMessage(message, type) {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = message;
+            messageElement.className = 'message ' + (type === 'success' ? 'success' : 'error');
+            messageElement.style.display = 'block';
+        }
+    </script>
+    
+</body>
+
+</html>

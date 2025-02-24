@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل دسترسی سریع</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #007BFF;
+        }
+
+        p {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .contact-info {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-info h2 {
+            margin-bottom: 10px;
+        }
+
+        .contact-info p {
+            margin-bottom: 8px;
+        }
+
+        .contact-info a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        .go-to-showcase-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-bottom: 20px; /* فاصله از پایین */
+            align-self: center; /* دکمه را در وسط صفحه قرار می‌دهد */
+        }
+
+        /* برای نمایش در دستگاه‌های کوچکتر */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>دسترسی سریع</h1>
+
+        <section>
+            <h2>سوالات متداول</h2>
+            <ul>
+                <li><strong>چطور ثبت‌نام کنم؟</strong> برای ثبت‌نام، کافیست ایمیل و رمز عبور خود را وارد کرده و دکمه ثبت‌نام را فشار دهید.</li>
+                <li><strong>چطور وارد حساب خود شوم؟</strong> برای ورود به حساب، ایمیل و رمز عبور خود را وارد کنید و دکمه ورود را بزنید.</li>
+            </ul>
+        </section>
+
+        <section class="contact-info">
+            <h2>اطلاعات تماس</h2>
+            <p><strong>آدرس:</strong> زاهدان </p>
+            <p><strong>تلفن:</strong> <a href="tel:+982112345678">093456789</a></p>
+            <p><strong>ایمیل:</strong> <a href="mailto:support@example.com">support@example.com</a></p>
+        </section>
+
+        <div>
+            <button onclick="window.location.href='showcase.html'" class="go-to-showcase-btn" style="display: block; width: 150px; height: 70px; font-size: 20px;">
+                بازگشت به منو
+            </button>
+        </div>
+    </div>
+
+    
+    
+
+        
+    
+
+</body>
+</html>

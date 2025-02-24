@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-container {
+            padding: 20px;
+            flex-grow: 1; /* این خاصیت باعث می‌شود که منو فضای موجود را پر کند */
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .cart-item button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* استایل دکمه */
+        .go-to-showcase-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-bottom: 20px; /* فاصله از پایین */
+            align-self: center; /* دکمه را در وسط صفحه قرار می‌دهد */
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>سبد خرید</h1>
+        <div id="cartItems"></div>
+    </div>
+
+    <button onclick="window.location.href='showcase.html'" class="go-to-showcase-btn" style="display: block; width: 200px; height: 100px; font-size: 30px;">
+        بازگشت به منو
+    </button>
+    
+
+    <script>
+        // دریافت محصولات سبد خرید
+        function loadCart() {
+            fetch('http://localhost:5000/api/cart') // با استفاده از متد fetch یک درخواست GET به آدرس http://localhost:5000/api/cart ارسال می‌شود تا داده‌های سبد خرید از سرور بازیابی شوند.
+                .then(response => response.json())
+                .then(data => {   // داده‌های تبدیل‌شده در متغیر data ذخیره می‌شوند.
+                    const cartContainer = document.getElementById('cartItems');
+                    cartContainer.innerHTML = '';   // محتوای قبلی این کانتینر پاک می‌شود تا محتوای جدید نمایش داده شود.
+
+                    if (data.length === 0) {
+                        cartContainer.innerHTML = '<p>سبد خرید شما خالی است!</p>';
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        const cartItem = document.createElement('div');  // یک عنصر div جدید به نام cartItem ساخته می‌شود.
+                        cartItem.className = 'cart-item';
+                        cartItem.innerHTML = `
+                            <div style="display: flex;   align-items: center; margin-bottom: 10px;">
+                                <img src="${item.productImage}" alt="${item.productName}" style="width: 100px; height: 100px; margin-right: 10px;">
+                                <div>
+                                    <p><strong>${item.productName}</strong></p>
+                                    <p>تعداد : ${item.quantity}</p>
+                                    <p> e}</p>
+                                </div>
+                                <button onclick="removeFromCart(${item.productId})" style=" font-size: 18px; width: 100px; height: 50px; margin-left: 100px; ">حذف سفارش</button>
+                            </div>
+                        `;
+                        cartContainer.appendChild(cartItem);  // آیتم ساخته‌شده (cartItem) به کانتینر اصلی (cartContainer) اضافه می‌شود.
+
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('cartItems').innerHTML = '<p>Failed to load cart. Please try again later.</p>';
+                });
+        }
+
+        // حذف محصول از سبد خرید
+        function removeFromCart(productId) {
+            fetch(`http://localhost:5000/api/cart/${productId}`, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    loadCart(); // به‌روزرسانی سبد خرید پس از حذف
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // بارگذاری سبد خرید در ابتدا
+        loadCart();
+    </script>
+
+</body>
+</html>
